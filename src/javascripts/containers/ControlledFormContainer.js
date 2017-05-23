@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import ControlledForm from "../components/ControlledForm";
 import serialize from "form-serialize";
-import { validateForm, validatePassword } from "../helpers";
+import { validateForm, validatePassword, validateUrl } from "../helpers";
 
 class ControlledFormContainer extends Component {
   constructor() {
@@ -10,24 +10,49 @@ class ControlledFormContainer extends Component {
       success: false,
       errors: {},
       exampleEmail: "",
-      password: "",
-      exampleURL: ""
+      examplePassword: "",
+      exampleURL: "",
+      realTimeErrors: {}
     };
   }
 
   onChangePassword = e => {
+      let realTimeErrors = this.state.realTimeErrors;
     const passwordValidationResponse = validatePassword({
       password: e.target.value
     });
     if (passwordValidationResponse) {
       //fail failure
-      this.setState({
-        errors: passwordValidationResponse
-      });
+      realTimeErrors.examplePassword = passwordValidationResponse.password;
     } else {
-      this.formSuccess();
+        delete realTimeErrors.examplePassword;
     }
+    this.setState({
+        realTimeErrors,
+        examplePassword: e.target.value
+    });
   };
+  onChangeUrl = e => {
+      let realTimeErrors = this.state.realTimeErrors;
+    const urlValidationResponse = validateUrl({
+      url: e.target.value
+    });
+    console.log("Url validation response", urlValidationResponse);
+    if (urlValidationResponse) {
+      //fail failure
+      realTimeErrors.exampleUrl = urlValidationResponse.exampleUrl;
+    } else {
+        delete realTimeErrors.exampleUrl;
+    }
+    this.setState({
+        realTimeErrors,
+        exampleURL: e.target.value
+    }, () => console.log("current state", this.state));
+  };
+  
+  
+  
+  
 
   onChangeEmail = e => {
     let obj;
@@ -84,6 +109,7 @@ class ControlledFormContainer extends Component {
         onChangeInput={this.onChangeInput}
         onChangeEmail={this.onChangeEmail}
         onChangePassword={this.onChangePassword}
+        onChangeUrl={this.onChangeUrl}
         {...this.state}
       />
     );

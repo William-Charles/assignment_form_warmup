@@ -15,6 +15,12 @@ const passwordConstraints = {
   }
 };
 
+const urlConstraints = {
+  url: {
+    url: true
+  }
+};
+
 const formConstraints = {
   exampleEmail: {
     presence: true,
@@ -35,4 +41,8 @@ export function validatePassword(password) {
 
 export function validateForm(formData) {
   return validate(formData, formConstraints);
+}
+
+export function validateUrl(url) {
+  return validate(url, urlConstraints);
 }
