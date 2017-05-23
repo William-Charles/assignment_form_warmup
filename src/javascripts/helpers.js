@@ -8,6 +8,13 @@ export function isEmpty(object) {
   return Object.keys(object).length === 0;
 }
 
+const passwordConstraints = {
+  password: {
+    presence: true,
+    length: { minimum: 12 }
+  }
+};
+
 const formConstraints = {
   exampleEmail: {
     presence: true,
@@ -21,6 +28,10 @@ const formConstraints = {
     url: true
   }
 };
+
+export function validatePassword(password) {
+  return validate(password, passwordConstraints);
+}
 
 export function validateForm(formData) {
   return validate(formData, formConstraints);

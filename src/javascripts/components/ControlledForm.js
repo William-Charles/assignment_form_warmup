@@ -9,6 +9,7 @@ const ControlledForm = ({
   onSubmit,
   onChangeInput,
   onChangeEmail,
+  onChangePassword,
   success,
   errors,
   exampleEmail,
@@ -36,7 +37,7 @@ const ControlledForm = ({
         state={getColorFromError(errors.examplePassword)}
         name="examplePassword"
         value={examplePassword}
-        onChange={onChangeInput}
+        onChange={onChangePassword}
       />
       <ValidationErrorMessage message={errors.examplePassword} />
     </FormGroup>

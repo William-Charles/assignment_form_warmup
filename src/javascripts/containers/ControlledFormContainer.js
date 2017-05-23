@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import ControlledForm from "../components/ControlledForm";
-import serialize from 'form-serialize';
-import {validateForm} from '../helpers';
+import serialize from "form-serialize";
+import { validateForm, validatePassword } from "../helpers";
 
 class ControlledFormContainer extends Component {
   constructor() {
@@ -10,18 +10,35 @@ class ControlledFormContainer extends Component {
       success: false,
       errors: {},
       exampleEmail: "",
-      examplePassword: "",
+      password: "",
       exampleURL: ""
     };
   }
 
-  validateEmail = value => {
-    return true;
+  onChangePassword = e => {
+    const passwordValidationResponse = validatePassword({
+      password: e.target.value
+    });
+    if (passwordValidationResponse) {
+      //fail failure
+      this.setState({
+        errors: passwordValidationResponse
+      });
+    } else {
+      this.formSuccess();
+    }
   };
 
   onChangeEmail = e => {
+    let obj;
+    if (!e.target.value.includes("@")) {
+      obj = { exampleEmail: ["needs a @ to be valid"] };
+    } else {
+      obj = {};
+    }
     this.setState({
       //errors: { exampleEmail: !this.validateEmail(e.target.value) },
+      errors: obj,
       exampleEmail: e.target.value
     });
   };
@@ -34,17 +51,17 @@ class ControlledFormContainer extends Component {
 
   onSubmit = e => {
     e.preventDefault();
-    const form = serialize(e.target, {hash:true});
-    console.log(this.state);
+    const form = serialize(e.target, { hash: true });
     const formValidationResponse = validateForm(form);
+    console.log(formValidationResponse);
     if (formValidationResponse) {
-        //fail failure
-        this.setState({
-            errors: formValidationResponse
-        });
+      //fail failure
+      this.setState({
+        errors: formValidationResponse
+      });
+    } else {
+      this.formSuccess();
     }
-
-    this.formSuccess();
   };
 
   formSuccess = () => {
@@ -66,6 +83,7 @@ class ControlledFormContainer extends Component {
         onSubmit={this.onSubmit}
         onChangeInput={this.onChangeInput}
         onChangeEmail={this.onChangeEmail}
+        onChangePassword={this.onChangePassword}
         {...this.state}
       />
     );
