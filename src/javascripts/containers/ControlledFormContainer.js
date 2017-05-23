@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import ControlledForm from "../components/ControlledForm";
+import serialize from 'form-serialize';
+import {validateForm} from '../helpers';
 
 class ControlledFormContainer extends Component {
   constructor() {
@@ -14,15 +16,13 @@ class ControlledFormContainer extends Component {
   }
 
   validateEmail = value => {
-    if (!value.contains("@")) {
-      return true;
-    }
-    return false;
+    return true;
   };
 
   onChangeEmail = e => {
     this.setState({
-      errors: { exampleEmail: this.validateEmail(e.target.value) }
+      //errors: { exampleEmail: !this.validateEmail(e.target.value) },
+      exampleEmail: e.target.value
     });
   };
 
@@ -34,8 +34,15 @@ class ControlledFormContainer extends Component {
 
   onSubmit = e => {
     e.preventDefault();
-    console.log("This is the form response", e);
+    const form = serialize(e.target, {hash:true});
     console.log(this.state);
+    const formValidationResponse = validateForm(form);
+    if (formValidationResponse) {
+        //fail failure
+        this.setState({
+            errors: formValidationResponse
+        });
+    }
 
     this.formSuccess();
   };
